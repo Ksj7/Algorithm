@@ -1,4 +1,4 @@
-# Algorithm
+# Algorithm code for Boj, ACM/ICPC etc.
 
 >The algorithm site that I solved problem is (https://www.acmicpc.net/)
 
