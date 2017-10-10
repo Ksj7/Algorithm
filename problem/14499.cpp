@@ -8,7 +8,7 @@ int map[21][21];
 
 int main(){
 	int temp;
-	cin >> N >> M >> sx >> sy >> K;
+	cin >> N >> M >> sy >> sx >> K;
 	for(int i=0; i<N; i++){
 		for(int j=0; j<M; j++){
 			cin >> map[i][j];
@@ -19,70 +19,73 @@ int main(){
 		switch(temp){
 			int t;
 			case 1 :
-				sx += 1;
-				t = D[3];
-				D[3] = D[1];
-				D[1] = D[4];
-				D[4] = D[6];
-				D[6] = t;
-				if(sx < M){
+				if(0 <= sy && sy < N && 0 <= sx + 1 && sx + 1 < M){
+					sx += 1;
+					t = D[3];
+					D[3] = D[1];
+					D[1] = D[4];
+					D[4] = D[6];
+					D[6] = t;
 					if(map[sy][sx] == 0){
 						map[sy][sx] = D[6];
 					}else{
 						D[6] = map[sy][sx];
 						map[sy][sx] = 0;
 					}
+					cout << D[1] << endl;
 				}
 			break;
 			case 2 :
-				sx -= 1;
-				t = D[4];
-				D[4] = D[1];
-				D[1] = D[3];
-				D[3] = D[6];
-				D[6] = t;
-				if(sx >= 0){
+				if(0 <= sy && sy < N && 0 <= sx - 1 && sx -1 < M){
+					sx -= 1;
+					t = D[4];
+					D[4] = D[1];
+					D[1] = D[3];
+					D[3] = D[6];
+					D[6] = t;
 					if(map[sy][sx] == 0){
 						map[sy][sx] = D[6];
 					}else{
 						D[6] = map[sy][sx];
 						map[sy][sx] = 0;
 					}
+					cout << D[1] << endl;
 				}
 			break;
 			case 3:
-				sy -= 1;
-				t = D[2];
-				D[2] = D[1];
-				D[1] = D[5];
-				D[5] = D[6];
-				D[6] = t;
-				if(sy >= 0){
+				if(0 <= sy -1 && sy -1 < N && 0 <= sx && sx < M){
+					sy -= 1;
+					t = D[2];
+					D[2] = D[1];
+					D[1] = D[5];
+					D[5] = D[6];
+					D[6] = t;
 					if(map[sy][sx] == 0){
 						map[sy][sx] = D[6];
 					}else{
 						D[6] = map[sy][sx];
 						map[sy][sx] = 0;
 					}
+					cout << D[1] << endl;
 				}
 			break;
 			case 4:
-				sy += 1;
-				t = D[5];
-				D[5] = D[1];
-				D[1] = D[2];
-				D[2] = D[6];
-				D[6] = t;
-				if(sy < N){
+				if(0 <= sy + 1 && sy + 1 < N && 0 <= sx && sx < M){
+					sy += 1;
+					t = D[5];
+					D[5] = D[1];
+					D[1] = D[2];
+					D[2] = D[6];
+					D[6] = t;
 					if(map[sy][sx] == 0){
 						map[sy][sx] = D[6];
 					}else{
 						D[6] = map[sy][sx];
 						map[sy][sx] = 0;
 					}
+					cout << D[1] << endl;
 				}
 			break;
 		}
-		cout << D[1] << endl;
 	}
 }
