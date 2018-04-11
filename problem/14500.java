@@ -1,157 +1,62 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
+    static int[] dy = {0, 0, 1, -1};
+    static int[] dx = {1, -1, 0, 0};
+    static int N, M;
+    static int max = -1;
+    static int map[][];
+
+    static void dfs(int[][] check, int y, int x, int n, int sum) {
+        if (n == 4) {
+            max = Math.max(max, sum);
+        } else {
+            for (int k = 0; k < 4; k++) {
+                int ny = y + dy[k];
+                int nx = x + dx[k];
+                if (ny >= 0 && ny < N && nx >= 0 && nx < M) {
+                    if (check[ny][nx] == 0) {
+                        check[ny][nx] = 1;
+                        dfs(check, ny, nx, n + 1, sum + map[ny][nx]);
+                        check[ny][nx] = 0;
+                    }
+                }
+            }
+        }
+    }
+
     public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt();
-        int M = sc.nextInt();
-        int[][] a = new int[N][M];
-        int max = 0;
-
-        int[][] aa_x = {{-1, 0, 0, 1}, {-1, 0, 0, 1}, {-1, -1, 0, 0}, {0, 0, 1, 1}};
-        int[][] aa_y = {{0, 0, 1, 1}, {1, 1, 0, 0}, {1, 0, 0, -1}, {-1, 0, 0, 1}};
-
-        int[][] bb_x = {{-1, 0, 0, 0}, {0, 0, 0, -1}, {0, 0, 0, 1}, {1, 0, 0, 0}};
-        int[][] bb_y = {{-1, -1, 0, 1}, {-1, 0, 1, 1}, {-1, 0, 1, 1}, {-1, -1, 0, 1}};
-
-        int[][] bbb_x = {{-1, -1, 0, 1}, {-1, 0, 1, 1}, {-1, -1, 0, 1}, {-1, 0, 1, 1}};
-        int[][] bbb_y = {{1, 0, 0, 0}, {0, 0, 0, 1}, {-1, 0, 0, 0}, {0, 0, 0, -1}};
-
-        int[][] cc_x = {{0, 0, 0, -1}, {0, 0, 0, 1}, {-1, 0, 1, 0}, {-1, 0, 1, 0}};
-        int[][] cc_y = {{-1, 0, 1, 0}, {-1, 0, 1, 0}, {0, 0, 0, 1}, {0, 0, 0, -1}};
-
+        //테트로미노 하나를 적절히 놓아서 테트로미노가 놓인 칸에 쓰여 있는 수들의 합을 최대로 해야함
+        // 회전이나 대칭을 시켜도 된다.
+        N = sc.nextInt();//세로 크기 N과 가로 크기 M
+        M = sc.nextInt();
+        int check[][] = new int[N][M];
+        map = new int[N][M];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                a[i][j] = sc.nextInt();
+                map[i][j] = sc.nextInt();
             }
         }
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < M; x++) {
-                if (x - 1 >= 0 && x + 1 < M && y - 1 >= 0 && y + 1 < N) {
-                    for (int j = 0; j < 4; j++) {
-                        int sum = 0;
-                        for (int i = 0; i < 4; i++) {
-                            int ny = y + aa_y[j][i];
-                            int nx = x + aa_x[j][i];
-                            sum += a[ny][nx];
-                        }
-                        if (sum > max) max = sum;
-                        sum = 0;
-                        for (int i = 0; i < 4; i++) {
-                            int ny = y + bb_y[j][i];
-                            int nx = x + bb_x[j][i];
-                            sum += a[ny][nx];
-                        }
-                        if (sum > max) max = sum;
-
-                        sum = 0;
-                        for (int i = 0; i < 4; i++) {
-                            int ny = y + bbb_y[j][i];
-                            int nx = x + bbb_x[j][i];
-                            sum += a[ny][nx];
-                        }
-                        if (sum > max) max = sum;
-
-                        sum = 0;
-                        for (int i = 0; i < 4; i++) {
-                            int ny = y + cc_y[j][i];
-                            int nx = x + cc_x[j][i];
-                            sum += a[ny][nx];
-                        }
-                        if (sum > max) max = sum;
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < M; j++) {
+                int data[] = new int[4];
+                check[i][j] = 1;
+                dfs(check, i, j, 1, map[i][j]);
+                for (int k = 0; k < 4; k++) {
+                    int ny = i + dy[k];
+                    int nx = j + dx[k];
+                    if (ny >= 0 && ny < N && nx >= 0 && nx < M) {
+                        data[k] = map[ny][nx];
                     }
-                } else if (x - 1 >= 0 && x + 1 < M) {
-                    if (y - 1 >= 0) {
-
-                        int sum = a[y][x - 1] + a[y][x + 1] + a[y - 1][x] + a[y][x];
-                        if (sum > max) max = sum;
-
-                        for (int j = 2; j < 4; j++) {
-                            sum = 0;
-                            for (int i = 0; i < 4; i++) {
-                                int ny = y + bbb_y[j][i];
-                                int nx = x + bbb_x[j][i];
-                                sum += a[ny][nx];
-                            }
-                            if (sum > max) max = sum;
-                        }
-
-
-                    } else if (y + 1 < N) {
-                        for (int j = 0; j < 2; j++) {
-                            int sum = 0;
-                            for (int i = 0; i < 4; i++) {
-                                int ny = y + aa_y[j][i];
-                                int nx = x + aa_x[j][i];
-                                sum += a[ny][nx];
-                            }
-                            if (sum > max) max = sum;
-                        }
-
-                        for (int j = 0; j < 2; j++) {
-                            int sum = 0;
-                            for (int i = 0; i < 4; i++) {
-                                int ny = y + bbb_y[j][i];
-                                int nx = x + bbb_x[j][i];
-                                sum += a[ny][nx];
-                            }
-                            if (sum > max) max = sum;
-                        }
-
-
-                        int sum = a[y][x - 1] + a[y][x + 1] + a[y][x] + a[y + 1][x];
-                        if (sum > max) max = sum;
-                    }
-                } else if (y - 1 >= 0 && y + 1 < N) {
-
-                    if (x - 1 >= 0) {
-                        for (int j = 0; j < 2; j++) {
-                            int sum = 0;
-                            for (int i = 0; i < 4; i++) {
-                                int ny = y + bb_y[j][i];
-                                int nx = x + bb_x[j][i];
-                                sum += a[ny][nx];
-                            }
-                            if (sum > max) max = sum;
-                        }
-                        int sum = a[y][x - 1] + a[y - 1][x] + a[y][x] + a[y + 1][x];
-                        if (sum > max) max = sum;
-                        sum = a[y - 1][x] + a[y][x] + a[y][x - 1] + a[y - 1][x - 1];
-                        if (sum > max) max = sum;
-
-                    } else if (x + 1 < M) {
-                        for (int j = 2; j < 4; j++) {
-                            int sum = 0;
-                            for (int i = 0; i < 4; i++) {
-                                int ny = y + bb_y[j][i];
-                                int nx = x + bb_x[j][i];
-                                sum += a[ny][nx];
-                            }
-                            if (sum > max) max = sum;
-                        }
-                        int sum = a[y][x + 1] + a[y - 1][x] + a[y][x] + a[y + 1][x];
-                        if (sum > max) max = sum;
-                        sum = a[y - 1][x] + a[y][x] + a[y][x + 1] + a[y + 1][x + 1];
-                        if (sum > max) max = sum;
-                    }
-
                 }
-
-                if (y + 2 < N && y - 1 >= 0) {
-                    int sum = a[y + 2][x] + a[y + 1][x] + a[y][x] + a[y - 1][x];
-                    if (sum > max) max = sum;
-                }
-                if (x + 2 < M && x - 1 >= 0) {
-                    int sum = a[y][x + 2] + a[y][x + 1] + a[y][x] + a[y][x - 1];
-                    if (sum > max) max = sum;
-                }
-                if (x + 1 < M && y + 1 < N) {
-                    int sum = a[y][x] + a[y][x + 1] + a[y + 1][x] + a[y + 1][x + 1];
-                    if (sum > max) max = sum;
-                }
-
+                Arrays.sort(data);
+                max = Math.max(max, map[i][j] + data[3] + data[2] + data[1]);
+                check[i][j] = 0;
             }
-        }
+
         System.out.println(max);
+
     }
 }
