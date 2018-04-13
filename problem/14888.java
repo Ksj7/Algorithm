@@ -1,62 +1,76 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    static ArrayList<int[]> op = new ArrayList<>();
+    static int N;
+    static int[] A;
+    static long max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
 
-    public static void perm(int[] arr, int depth, int n, int k) {
-        if (depth == k) {
-            op.add(arr.clone());
+    static void solution(int[] op, int cnt, long s) {
+        // idx - 연산자
+        //  0  - 덧셈(+)의 개수,
+        //  1  - 뺄셈(-)의 개수,
+        //  2  - 곱셈(×)의 개수,
+        //  3  - 나눗셈(÷)의 개수
+
+        if (cnt == N - 1) {
+            max = Math.max(s, max);
+            min = Math.min(s, min);
             return;
         }
-        for (int i = depth; i < n; i++) {
-            swap(arr, i, depth);
-            perm(arr, depth + 1, n, k);
-            swap(arr, i, depth);
+
+        if (op[0] != 0) {
+            op[0]--;
+            s += A[cnt + 1];
+            solution(op, cnt + 1, s);
+            op[0]++;
+            s -= A[cnt + 1];
         }
+
+        if (op[1] != 0) {
+            op[1]--;
+            s -= A[cnt + 1];
+            solution(op, cnt + 1, s);
+            op[1]++;
+            s += A[cnt + 1];
+        }
+
+
+        if (op[2] != 0) {
+            op[2]--;
+            s *= A[cnt + 1];
+            solution(op, cnt + 1, s);
+            op[2]++;
+            s /= A[cnt + 1];
+        }
+
+
+        if (op[3] != 0) {
+            op[3]--;
+            s /= A[cnt + 1];
+            solution(op, cnt + 1, s);
+            op[3]++;
+            s *= A[cnt + 1];
+        }
+
     }
 
-    public static void swap(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
-
-    public static void main(String[] args) {
-        ArrayList<Integer> ar = new ArrayList<>();
-        int max = Integer.MIN_VALUE; int min = Integer.MAX_VALUE;
+    public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        ArrayList<Integer> tem = new ArrayList<>();
-        for(int i=0; i < n; i++)
-            ar.add(sc.nextInt());
-        int temp;
-        for(int i=0; i < 4; i++) {
-            temp = sc.nextInt();
-            if(temp != 0) {
-                while(temp > 0){
-                    tem.add(i);
-                    temp--;
-                }
-            }
+        N = sc.nextInt();
+        A = new int[N];
+        int[] OP = new int[4];
+        for (int i = 0; i < N; i++) {
+            A[i] = sc.nextInt();
         }
-        //덧셈(+)의 개수, 뺄셈(-)의 개수, 곱셈(×)의 개수, 나눗셈(÷)의 개수이다.
-        int[] oper = tem.stream().mapToInt(i -> i).toArray();
-        perm(oper, 0 , tem.size(), tem.size());
-        for(int i=0 ;i <op.size(); i++){
-            int[] t = op.get(i);
-            int result = ar.get(0);
-            for(int j=1; j<n; j++){
-                if(t[j-1] == 0) result += ar.get(j);
-                else if(t[j-1]==1) result -= ar.get(j);
-                else if(t[j-1]==2) result *=  ar.get(j);
-                else result /= ar.get(j);
-            }
-            if(result > max) max = result;
-            if(result < min) min = result;
+        for (int i = 0; i < 4; i++) {
+            OP[i] = sc.nextInt();
         }
-        System.out.print(max +"\n" + min);
+
+        solution(OP, 0, A[0]);
 
 
+        System.out.println(max);
+        System.out.println(min);
     }
 }
+
